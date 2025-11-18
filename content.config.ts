@@ -22,7 +22,7 @@ const createLinkSchema = () => z.object({
 
 export const collections = {
   index: defineCollection({
-    source: '0.index.md',
+    source: '0.index.yml',
     type: 'page',
     schema: z.object({
       hero: z.object(({

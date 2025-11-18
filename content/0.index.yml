@@ -9,10 +9,12 @@ hero:
     - label: Let's talk
       icon: i-lucide-arrow-right
       trailing: true
+      variant: solid
+      color: warning
       to: /contact
       size: xl
     - label: My projects
-      icon: i-simple-icons-github
+      icon: i-lucide-briefcase
       size: xl
       color: neutral
       variant: subtle

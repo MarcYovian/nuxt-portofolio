@@ -3,6 +3,13 @@ export default defineAppConfig({
     colors: {
       primary: 'green',
       neutral: 'zinc'
+    },
+    button: {
+      defaultVariants: {
+        size: 'md',
+        color: 'primary',
+        variant: 'solid'
+      }
     }
   }
 })
