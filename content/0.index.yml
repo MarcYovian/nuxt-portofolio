@@ -1,0 +1,19 @@
+title: I'm a [Full-Stack Developer]{class="text-warning"}
+description: Passionate full-stack developer with expertise in back-end systems, mobile applications, and machine learning. I create scalable solutions that solve real-world problems and deliver exceptional user experiences.
+seo:
+  title: I'm a Full-Stack Developer
+  description: Passionate full-stack developer with expertise in back-end systems, mobile applications, and machine learning. I create scalable solutions that solve real-world problems and deliver exceptional user experiences. 
+navigation: false
+hero:
+  links:
+    - label: Let's talk
+      icon: i-lucide-arrow-right
+      trailing: true
+      to: /contact
+      size: xl
+    - label: My projects
+      icon: i-simple-icons-github
+      size: xl
+      color: neutral
+      variant: subtle
+      to: /projects
