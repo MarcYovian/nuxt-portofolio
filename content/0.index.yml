@@ -64,6 +64,36 @@ testimonials:
   description: "Here's what people say about working with me."
   items: []
 
+skills:
+  title: "Tech Stack"
+  description: "The technologies and tools I use to build resilient applications."
+  groups:
+    - title: "Languages"
+      items:
+        - "TypeScript"
+        - "JavaScript"
+        - "PHP"
+        - "Python"
+        - "Dart"
+        - "HTML/CSS"
+
+    - title: "Frameworks"
+      items:
+        - "Vue.js"
+        - "Nuxt"
+        - "Laravel"
+        - "Tailwind CSS"
+        - "Flutter"
+
+    - title: "Tools & DevOps"
+      items:
+        - "Git"
+        - "Docker"
+        - "PostgreSQL"
+        - "MySQL"
+        - "Figma"
+        - "Supabase"
+
 # Call to Action di bagian bawah halaman
 cta:
   title: "Ready to start a project?"

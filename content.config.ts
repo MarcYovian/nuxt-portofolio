@@ -73,6 +73,19 @@ export const collections = {
         items: z.array(createFeatureItemSchema()),
       }),
 
+      skills: z
+        .object({
+          title: z.string().nonempty(),
+          description: z.string().nonempty(),
+          groups: z.array(
+            z.object({
+              title: z.string().nonempty(),
+              items: z.array(z.string()), // Array of strings (nama teknologi)
+            }),
+          ),
+        })
+        .optional(),
+
       // 4. Schema untuk Sections (Optional, untuk layout tambahan)
       sections: z
         .array(

@@ -62,6 +62,34 @@ useSeoMeta({
       </div>
     </section>
 
+    <section v-if="page.skills" class="space-y-8" v-motion-slide-visible-once-bottom>
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-3xl font-bold text-white mb-4">{{ page.skills.title }}</h2>
+        <p class="text-zinc-400">{{ page.skills.description }}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div v-for="(group, index) in page.skills.groups" :key="index"
+          class="relative group p-6 rounded-2xl bg-zinc-900/30 border border-zinc-800 hover:border-primary-500/30 transition-all duration-300">
+          <div
+            class="absolute -top-px -left-px w-8 h-8 border-t-2 border-l-2 border-primary-500/20 rounded-tl-2xl group-hover:border-primary-500/50 transition-colors">
+          </div>
+
+          <h3 class="text-xl font-semibold text-zinc-200 mb-6 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-primary-500"></span>
+            {{ group.title }}
+          </h3>
+
+          <div class="flex flex-wrap gap-2">
+            <span v-for="tech in group.items" :key="tech"
+              class="px-3 py-1.5 text-sm rounded-md bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 hover:text-white hover:border-primary-500/40 hover:bg-primary-500/10 transition-all duration-200 cursor-default">
+              {{ tech }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="py-20 text-center" v-motion-slide-visible-once-bottom>
       <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
         Ready to start a project?
