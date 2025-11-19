@@ -1,25 +1,77 @@
-title: "I'm a " 
-description: Passionate full-stack developer with expertise in back-end systems, mobile applications, and machine learning. I create scalable solutions that solve real-world problems and deliver exceptional user experiences.
-roles: 
+title: "Hello, I'm"
+description: "I'm a passionate Software Engineer specialized in building exceptional digital experiences. Currently focused on building accessible, human-centered products."
+
+# Data untuk animasi ketik (Typing Effect)
+roles:
   - "Full-Stack Developer"
-  - "Mobile Developer"
+  - "Mobile App Developer"
   - "Machine Learning Enthusiast"
-seo:
-  title: I'm a Full-Stack Developer
-  description: Passionate full-stack developer with expertise in back-end systems, mobile applications, and machine learning. I create scalable solutions that solve real-world problems and deliver exceptional user experiences. 
-navigation: false
+  - "UI/UX Lover"
+
+# Konfigurasi Tombol di Hero Section
 hero:
   links:
-    - label: Let's talk
-      icon: i-lucide-arrow-right
+    - label: "View Projects"
+      to: "/projects"
+      icon: "i-heroicons-code-bracket-square"
+      size: "lg"
+      color: "primary"
+      variant: "solid"
+    - label: "Contact Me"
+      to: "/contacts"
+      icon: "i-heroicons-paper-airplane"
+      size: "lg"
+      color: "gray"
+      variant: "ghost"
       trailing: true
-      variant: solid
-      color: warning
-      to: /contact
-      size: xl
-    - label: My projects
-      icon: i-lucide-briefcase
-      size: xl
-      color: neutral
-      variant: subtle
-      to: /projects
+
+# Bagian Keahlian / Services
+features:
+  title: "What I Do"
+  description: "I combine technical expertise with design thinking to solve complex problems."
+  items:
+    - title: "Web Development"
+      description: "Building fast, responsive, and SEO-friendly websites using modern frameworks like Vue, Nuxt, and Tailwind CSS."
+      icon: "i-heroicons-globe-alt"
+
+    - title: "Mobile Development"
+      description: "Creating native-like mobile applications for iOS and Android using Flutter and cross-platform technologies."
+      icon: "i-heroicons-device-phone-mobile"
+
+    - title: "Backend Systems"
+      description: "Designing scalable database architectures and secure APIs using Node.js, Python, and SQL/NoSQL databases."
+      icon: "i-heroicons-server-stack"
+
+    - title: "Machine Learning"
+      description: "Implementing intelligent solutions and data analysis models using Python, TensorFlow, and Scikit-learn."
+      icon: "i-heroicons-cpu-chip"
+
+    - title: "UI/UX Design"
+      description: "Crafting intuitive and aesthetically pleasing user interfaces with a focus on user experience and accessibility."
+      icon: "i-heroicons-paint-brush"
+
+    - title: "Cloud Integration"
+      description: "Deploying and managing applications on cloud platforms like AWS, Google Cloud, or Vercel."
+      icon: "i-heroicons-cloud"
+
+# (Opsional) Jika Anda menggunakan layout SaaS asli untuk section tambahan
+sections: []
+
+# (Opsional) Testimoni jika diperlukan nanti
+testimonials:
+  headline: "Testimonials"
+  title: "Trusted by Clients"
+  description: "Here's what people say about working with me."
+  items: []
+
+# Call to Action di bagian bawah halaman
+cta:
+  title: "Ready to start a project?"
+  description: "Let's turn your idea into reality. I'm currently available for freelance work."
+  links:
+    - label: "Let's Talk"
+      to: "/contacts"
+      icon: "i-heroicons-chat-bubble-left-right"
+      size: "xl"
+      color: "white"
+      variant: "solid"

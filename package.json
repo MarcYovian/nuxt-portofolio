@@ -17,6 +17,7 @@
     "@nuxt/ui": "^4.1.0",
     "@unovis/ts": "^1.6.1",
     "@unovis/vue": "^1.6.1",
+    "@vueuse/motion": "^3.0.3",
     "@vueuse/nuxt": "^13.9.0",
     "better-sqlite3": "^12.4.1",
     "date-fns": "^4.1.0",
