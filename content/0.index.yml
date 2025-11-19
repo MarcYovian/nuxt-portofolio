@@ -1,5 +1,9 @@
-title: I'm a [Full-Stack Developer]{class="text-warning"}
+title: "I'm a " 
 description: Passionate full-stack developer with expertise in back-end systems, mobile applications, and machine learning. I create scalable solutions that solve real-world problems and deliver exceptional user experiences.
+roles: 
+  - "Full-Stack Developer"
+  - "Mobile Developer"
+  - "Machine Learning Enthusiast"
 seo:
   title: I'm a Full-Stack Developer
   description: Passionate full-stack developer with expertise in back-end systems, mobile applications, and machine learning. I create scalable solutions that solve real-world problems and deliver exceptional user experiences. 

@@ -124,13 +124,17 @@ const stats = [
               </UBadge>
 
               <div>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-                  <MDC :value="page.title" unwrap="p" tag="span" />
-                </h1>
-                <div class="mt-4 text-2xl sm:text-3xl font-semibold text-primary flex items-center gap-2">
-                  <span>{{ displayText }}</span>
-                  <span class="animate-pulse">|</span>
-                </div>
+                <span class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
+                  {{ page.title }}
+
+                  <ClientOnly>
+                    <TypingEffect
+                      v-if="page.roles"
+                      :words="page.roles"
+                      class="text-primary-500 dark:text-primary-400"
+                    />
+                  </ClientOnly>
+                </span>
               </div>
 
               <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">

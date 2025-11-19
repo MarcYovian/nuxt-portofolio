@@ -28,30 +28,20 @@ const items = computed(() => [{
       </NuxtLink>
     </template>
 
-    <UNavigationMenu
-      :items="items"
-      variant="link"
-      color="warning"
-    />
+    <UNavigationMenu :items="items" variant="link" color="warning" />
 
     <template #right>
-      <UButton
-        icon="i-lucide-github"
-        color="neutral"
-        variant="ghost"
-        href="https://github.com/MarcYovian"
-        target="_blank"
-      />
+      <UButton icon="i-lucide-github" color="neutral" variant="ghost" href="https://github.com/MarcYovian"
+        target="_blank" />
 
-      <UButton
-        icon="i-lucide-linkedin"
-        color="neutral"
-        variant="ghost"
-        href="https://www.linkedin.com/in/marcellinus-yovian-indrastata/"
-        target="_blank"
-      />
+      <UButton icon="i-lucide-linkedin" color="neutral" variant="ghost"
+        href="https://www.linkedin.com/in/marcellinus-yovian-indrastata/" target="_blank" />
 
       <UColorModeButton />
+    </template>
+
+    <template #body>
+      <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
     </template>
   </UHeader>
 </template>
