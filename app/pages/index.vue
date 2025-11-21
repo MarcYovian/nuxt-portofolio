@@ -14,6 +14,19 @@ useSeoMeta({
   title: page.value?.title,
   description: page.value?.description
 })
+
+const getProjectCategory = (title: string) => {
+  const map: Record<string, string> = {
+    'Web Development': 'web',
+    'Mobile Development': 'mobile',
+    'Machine Learning': 'ml',
+    'UI/UX Design': 'design',
+    'Backend Systems': 'web', // Fallback ke web
+    'Cloud Integration': 'web' // Fallback ke web
+  }
+  // Jika tidak ada di map, default ke 'all'
+  return map[title] || 'all'
+}
 </script>
 
 <template>
@@ -117,8 +130,8 @@ useSeoMeta({
             :delay="index * 100" class="group relative">
             <div
               class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div
-              class="relative p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800 hover:border-primary-500/30 transition-all duration-300 h-full">
+            <NuxtLink :to="{ path: '/projects', query: { category: getProjectCategory(item.title) } }"
+              class="block relative p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800 hover:border-primary-500/30 transition-all duration-300 h-full group cursor-pointer">
               <!-- Icon -->
               <div class="mb-6 relative">
                 <div
@@ -138,13 +151,12 @@ useSeoMeta({
                 {{ item.description }}
               </p>
 
-              <!-- Hover Arrow -->
               <div
                 class="mt-6 flex items-center gap-2 text-primary-400 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2">
-                <span class="text-sm font-medium">Learn more</span>
+                <span class="text-sm font-medium">View related projects</span>
                 <UIcon name="i-lucide-arrow-right" class="w-4 h-4" />
               </div>
-            </div>
+            </NuxtLink>
           </div>
         </div>
       </div>

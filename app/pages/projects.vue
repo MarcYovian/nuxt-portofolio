@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const selectedFilter = ref('all')
+const route = useRoute()
 
 const filters = [
   { label: 'All Projects', value: 'all' },
@@ -8,6 +8,10 @@ const filters = [
   { label: 'Machine Learning', value: 'ml' },
   { label: 'UI/UX', value: 'design' }
 ]
+
+const initialCategory = route.query.category as string | undefined
+const isValidCategory = filters.some(filter => filter.value === initialCategory)
+const selectedFilter = ref(isValidCategory ? initialCategory : 'all')
 
 const projects = ref([
   {
@@ -96,6 +100,13 @@ const regularProjects = computed(() => {
 useSeoMeta({
   title: 'Projects - Marcellinus Yovian',
   description: 'Explore my portfolio of web applications, mobile apps, and machine learning projects.'
+})
+
+watch(selectedFilter, (newFilter) => {
+  const query = newFilter === 'all' ? {} : { category: newFilter }
+  const url = newFilter === 'all' ? '/projects' : `/projects?category=${newFilter}`
+
+  window.history.replaceState(null, '', url)
 })
 </script>
 
