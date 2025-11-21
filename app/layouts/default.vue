@@ -1,3 +1,13 @@
+<script setup lang="ts">
+const colorMode = useColorMode()
+
+// Force dark mode when using the default (guest) layout
+// This ensures Nuxt UI components match your hardcoded bg-zinc-950 background
+onMounted(() => {
+  colorMode.preference = 'dark'
+})
+</script>
+
 <template>
   <div class="min-h-screen bg-zinc-950 text-zinc-200 font-sans relative overflow-hidden">
     <!-- Spotlight Effect -->

@@ -61,12 +61,6 @@ const items = computed(() => [{
               target="_blank" square />
             <UButton icon="i-lucide-linkedin" color="neutral" variant="ghost"
               href="https://www.linkedin.com/in/marcellinus-yovian-indrastata/" target="_blank" square />
-            <UColorModeButton />
-          </div>
-
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden">
-            <UColorModeButton />
           </div>
         </div>
       </div>
