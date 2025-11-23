@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@nuxt/content",
     "@vueuse/motion/nuxt",
+    "@nuxtjs/supabase",
   ],
 
   devtools: {
@@ -29,5 +30,11 @@ export default defineNuxtConfig({
         braceStyle: "1tbs",
       },
     },
+  },
+
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirect: false,
   },
 });

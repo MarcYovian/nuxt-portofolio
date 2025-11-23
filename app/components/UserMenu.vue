@@ -7,22 +7,64 @@ defineProps<{
 
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
+const toast = useToast()
+const supabase = useSupabaseClient()
+const user = useSupabaseUser()
+
+const userData = computed(() => {
+  if (!user.value) {
+    return {
+      name: 'Guest',
+      email: 'guest@nuxt.com',
+      avatar: {
+        src: 'https://github.com/benjamincanac.png',
+        alt: 'Guest'
+      }
+    }
+  }
+
+  return {
+    name: user.value.user_metadata?.full_name || user.value.email?.split('@')[0] || 'User',
+    email: user.value.email,
+    avatar: {
+      src: user.value.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.value.user_metadata?.full_name || user.value.email?.split('@')[0] || 'User'}`,
+      alt: user.value.user_metadata?.full_name || user.value.email?.split('@')[0] || 'User'
+    }
+  }
+})
+
+async function logout() {
+  try {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      throw error
+    }
+    toast.add({
+      title: 'You have been logged out',
+      description: 'You will be redirected to the login page',
+      color: 'success',
+      duration: 5000,
+      close: true
+    })
+    navigateTo('/auth/login')
+  } catch (error) {
+    toast.add({
+      title: 'Something went wrong',
+      description: 'Please try again',
+      color: 'error',
+      duration: 5000,
+      close: true
+    })
+  }
+}
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
-const user = ref({
-  name: 'Benjamin Canac',
-  avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
-  }
-})
-
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
-  label: user.value.name,
-  avatar: user.value.avatar
+  label: userData.value.name,
+  avatar: userData.value.avatar
 }], [{
   label: 'Profile',
   icon: 'i-lucide-user'
@@ -147,41 +189,28 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   target: '_blank'
 }, {
   label: 'Log out',
-  icon: 'i-lucide-log-out'
+  icon: 'i-lucide-log-out',
+  onSelect: logout
 }]]))
 </script>
 
 <template>
-  <UDropdownMenu
-    :items="items"
-    :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
-  >
-    <UButton
-      v-bind="{
-        ...user,
-        label: collapsed ? undefined : user?.name,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
-      }"
-      color="neutral"
-      variant="ghost"
-      block
-      :square="collapsed"
-      class="data-[state=open]:bg-elevated"
-      :ui="{
-        trailingIcon: 'text-dimmed'
-      }"
-    />
+  <UDropdownMenu :items="items" :content="{ align: 'center', collisionPadding: 12 }"
+    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }">
+    <UButton v-bind="{
+      ...userData,
+      label: collapsed ? undefined : userData.name,
+      trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
+    }" color="neutral" variant="ghost" block :square="collapsed" class="data-[state=open]:bg-elevated" :ui="{
+      trailingIcon: 'text-dimmed'
+    }" />
 
     <template #chip-leading="{ item }">
       <div class="inline-flex items-center justify-center shrink-0 size-5">
-        <span
-          class="rounded-full ring ring-bg bg-(--chip-light) dark:bg-(--chip-dark) size-2"
-          :style="{
-            '--chip-light': `var(--color-${(item as any).chip}-500)`,
-            '--chip-dark': `var(--color-${(item as any).chip}-400)`
-          }"
-        />
+        <span class="rounded-full ring ring-bg bg-(--chip-light) dark:bg-(--chip-dark) size-2" :style="{
+          '--chip-light': `var(--color-${(item as any).chip}-500)`,
+          '--chip-dark': `var(--color-${(item as any).chip}-400)`
+        }" />
       </div>
     </template>
   </UDropdownMenu>
