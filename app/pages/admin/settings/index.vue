@@ -46,7 +46,7 @@ async function getProfile() {
     const { data, error } = await supabase
       .from('profiles')
       .select(`full_name, avatar_url, bio, website, linkedin_url, github_url, twitter_url, phone, location`)
-      .eq('id', user.value.id)
+      .eq('id', user.value.sub)
       .single()
 
     if (error && error.code !== 'PGRST116') throw error
@@ -77,10 +77,15 @@ async function getProfile() {
   }
 }
 
-watch(() => user.value, (newUser) => {
-  console.log(newUser)
-  if (newUser) getProfile()
-}, { immediate: true })
+watch(
+  () => user.value,
+  (newUser: any) => {
+    if (newUser?.sub) {
+      getProfile()
+    }
+  },
+  { immediate: true }
+)
 
 
 function onFileChange(e: Event) {
@@ -100,30 +105,56 @@ function onFileClick() {
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     isLoading.value = true
+
+    if (!user.value?.sub) {
+      throw new Error('User not found')
+    }
+
     let avatarUrl = state.avatar_url
 
     // A. Upload Avatar jika ada file baru
     if (selectedFile.value) {
       const fileExt = selectedFile.value.name.split('.').pop()
-      const fileName = `${user.value!.id}-${Date.now()}.${fileExt}`
+      const filePath = `${user.value.sub}/avatar-${Date.now()}.${fileExt}`
 
-      // Pastikan bucket 'avatars' sudah dibuat di Supabase Storage
+      if (state.avatar_url && state.avatar_url.includes(user.value.sub)) {
+        try {
+          const oldPath = state.avatar_url.split('/avatar/')[1]
+          if (oldPath) {
+            await supabase.storage.from('avatars').remove([oldPath])
+          }
+        } catch (error) {
+          console.warn('failed to remove old avatar:', error)
+        }
+      }
+
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, selectedFile.value, { upsert: true })
+        .upload(filePath, selectedFile.value, {
+          upsert: true,
+          contentType: selectedFile.value.type
+        })
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        throw uploadError
+      }
 
+      // Get public URL
       const { data: urlData } = supabase.storage
         .from('avatars')
-        .getPublicUrl(fileName)
+        .getPublicUrl(filePath)
+
+      if (!urlData) {
+        throw new Error('Failed to get public URL')
+      }
 
       avatarUrl = urlData.publicUrl
     }
 
     // B. Update Tabel Profiles
     const updates = {
-      id: user.value!.id,
+      id: user.value!.sub,
       full_name: event.data.full_name,
       bio: event.data.bio,
       website: event.data.website,
@@ -148,8 +179,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     })
 
     toast.add({
-      title: 'Berhasil disimpan',
-      description: 'Profil Anda telah diperbarui.',
+      title: 'Success',
+      description: 'Profile updated successfully.',
       icon: 'i-lucide-check',
       color: 'success'
     })
@@ -157,8 +188,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     selectedFile.value = null // Reset file selection
 
   } catch (error: any) {
+    console.error('Error updating profile:', error)
     toast.add({
-      title: 'Gagal menyimpan',
+      title: 'Error updating profile',
       description: error.message,
       color: 'error',
       icon: 'i-lucide-alert-circle'
@@ -178,11 +210,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     <UPageCard variant="subtle">
       <!-- Avatar Upload -->
-      <UFormField name="avatar_url" label="Avatar" description="Klik untuk mengganti foto profil."
+      <UFormField name="avatar_url" label="Avatar" description="Click to change profile picture."
         class="flex max-sm:flex-col justify-between sm:items-center gap-4">
         <div class="flex flex-wrap items-center gap-3">
           <UAvatar :src="state.avatar_url" :alt="state.full_name" size="lg" icon="i-lucide-user" />
-          <UButton label="Pilih Foto" color="neutral" variant="outline" @click="onFileClick" />
+          <UButton label="Change" color="neutral" variant="outline" @click="onFileClick" />
           <input ref="fileRef" type="file" class="hidden" accept=".jpg, .jpeg, .png, .gif" @change="onFileChange">
         </div>
       </UFormField>
