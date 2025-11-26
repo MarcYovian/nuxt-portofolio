@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { Database } from '~/types/database'
+
+
 
 const props = defineProps<{
     item?: {
@@ -16,12 +17,14 @@ const props = defineProps<{
     } | null
 }>()
 
-const supabase = useSupabaseClient<Database>()
 const toast = useToast()
 const emit = defineEmits(['success', 'update:open'])
 
 const open = defineModel<boolean>('open')
-const categories = ref<{ id: number, name: string }[]>([])
+const { data: categories, refresh: refreshCategories } = await useFetch('/api/skill-categories', {
+    default: () => [],
+    lazy: true
+})
 
 const schema = z.object({
     category_id: z.number({ error: 'Category is required' }),
@@ -47,11 +50,6 @@ const state = reactive<Partial<Schema>>({
     is_active: true
 })
 
-async function fetchCategories() {
-    const { data } = await supabase.from('skill_categories').select('id, name').order('name')
-    if (data) categories.value = data
-}
-
 watch(() => props.item, (newItem) => {
     if (newItem) {
         state.category_id = newItem.category_id
@@ -65,7 +63,7 @@ watch(() => props.item, (newItem) => {
 }, { immediate: true })
 
 watch(open, (isOpen) => {
-    if (isOpen) fetchCategories()
+    if (isOpen) refreshCategories()
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -73,26 +71,24 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     loading.value = true
     try {
-        const { error } = await supabase.from('skills')
-            .update({
+        await $fetch(`/api/skills/${props.item.id}`, {
+            method: 'PUT',
+            body: {
                 category_id: event.data.category_id,
                 name: event.data.name,
                 icon: event.data.icon,
                 proficiency_level: event.data.proficiency_level,
                 years_of_experience: event.data.years_of_experience,
                 display_order: event.data.display_order,
-                is_active: event.data.is_active,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', props.item.id)
-
-        if (error) throw error
+                is_active: event.data.is_active
+            }
+        })
 
         toast.add({ title: 'Success', description: 'Skill updated successfully', color: 'success' })
         open.value = false
         emit('success')
     } catch (error: any) {
-        toast.add({ title: 'Error', description: error.message, color: 'error' })
+        toast.add({ title: 'Error', description: error.message || 'Failed to update skill', color: 'error' })
     } finally {
         loading.value = false
     }

@@ -29,14 +29,15 @@ const state = reactive<Partial<Schema>>({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = true
     try {
-        const { error } = await supabase.from('skill_categories').insert({
-            name: event.data.name,
-            icon: event.data.icon,
-            display_order: event.data.display_order,
-            is_active: event.data.is_active
+        await $fetch('/api/skill-categories', {
+            method: 'POST',
+            body: {
+                name: event.data.name,
+                icon: event.data.icon,
+                display_order: event.data.display_order,
+                is_active: event.data.is_active
+            }
         })
-
-        if (error) throw error
 
         toast.add({ title: 'Success', description: 'Skill category created successfully', color: 'success' })
         open.value = false
@@ -48,7 +49,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         state.display_order = 0
         state.is_active = true
     } catch (error: any) {
-        toast.add({ title: 'Error', description: error.message, color: 'error' })
+        toast.add({ title: 'Error', description: error.message || 'Failed to create category', color: 'error' })
     } finally {
         loading.value = false
     }

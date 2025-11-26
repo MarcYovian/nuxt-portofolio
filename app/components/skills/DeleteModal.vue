@@ -7,9 +7,10 @@ const props = defineProps<{
 
 const supabase = useSupabaseClient<Database>()
 const toast = useToast()
-const emit = defineEmits(['success', 'update:open'])
+const emit = defineEmits(['success'])
 
-const open = defineModel<boolean>('open')
+// Gunakan v-model untuk open state
+const open = defineModel<boolean>('open', { default: false })
 const loading = ref(false)
 
 async function onDelete() {
@@ -18,17 +19,28 @@ async function onDelete() {
     loading.value = true
     try {
         const ids = props.items.map(i => i.id)
-        const { error } = await supabase.from('skills')
-            .delete()
-            .in('id', ids)
 
-        if (error) throw error
+        await $fetch('/api/skills', {
+            method: 'DELETE',
+            body: { ids }
+        })
 
-        toast.add({ title: 'Success', description: 'Skills deleted successfully', color: 'success' })
+        toast.add({
+            title: 'Success',
+            description: `${props.items.length} item(s) deleted successfully`,
+            color: 'success',
+            icon: 'i-lucide-check-circle'
+        })
+
         open.value = false
         emit('success')
     } catch (error: any) {
-        toast.add({ title: 'Error', description: error.message, color: 'error' })
+        toast.add({
+            title: 'Error',
+            description: error.message || 'Failed to delete items',
+            color: 'error',
+            icon: 'i-lucide-alert-circle'
+        })
     } finally {
         loading.value = false
     }
@@ -36,11 +48,11 @@ async function onDelete() {
 </script>
 
 <template>
-    <UModal v-model:open="open" title="Delete skills" description="Are you sure you want to delete these skills?">
+    <UModal v-model:open="open" :title="`Delete ${items.length} item${items.length > 1 ? 's' : ''}`"
+        description="Are you sure you want to delete these items? This action cannot be undone.">
         <template #body>
-            <p>This action cannot be undone.</p>
             <div class="flex justify-end gap-2 mt-4">
-                <UButton label="Cancel" color="neutral" variant="subtle" @click="open = false" />
+                <UButton label="Cancel" color="neutral" variant="subtle" :disabled="loading" @click="open = false" />
                 <UButton label="Delete" color="error" variant="solid" :loading="loading" @click="onDelete" />
             </div>
         </template>

@@ -3,11 +3,9 @@ import type { TableColumn } from '@nuxt/ui'
 import { upperFirst } from 'scule'
 import { getPaginationRowModel } from '@tanstack/table-core'
 
-
 definePageMeta({
   layout: false
 })
-
 
 const toast = useToast()
 const UCheckbox = resolveComponent('UCheckbox')
@@ -27,12 +25,27 @@ const isDeleteOpen = ref(false)
 const selectedItem = ref<any>(null)
 const selectedItems = ref<any[]>([])
 
-// Data Fetching
-const { data, status, refresh, error } = await useAsyncData('skills', () => $fetch('/api/skills'))
+// Data Fetching dengan lazy: false
+const { data, status, refresh, error } = await useAsyncData(
+  'skills',
+  () => $fetch('/api/skills'),
+  {
+    lazy: false,
+    default: () => []
+  }
+)
 
-if (error.value) {
-  toast.add({ title: 'Error', description: error.value.message, color: 'error' })
-}
+// Watch error dan tampilkan toast
+watch(error, (newError) => {
+  if (newError) {
+    toast.add({
+      title: 'Error Loading Data',
+      description: newError.message || 'Failed to fetch skills',
+      color: 'error',
+      icon: 'i-lucide-alert-circle'
+    })
+  }
+})
 
 // Actions
 function onEdit(row: any) {
@@ -53,7 +66,7 @@ function getSelectedRows() {
 
 watch(rowSelection, () => {
   selectedItems.value = getSelectedRows()
-})
+}, { flush: 'post' })
 
 function getRowItems(row: any) {
   return [
@@ -154,6 +167,30 @@ const columns: TableColumn<any>[] = [
     }
   }
 ]
+
+// Skeleton data
+const skeletonData = Array(5).fill({
+  id: 0,
+  name: '',
+  icon: '',
+  category_id: 0,
+  display_order: 0,
+  proficiency_level: 0,
+  years_of_experience: 0,
+  is_active: false,
+  skill_categories: { name: '' }
+})
+
+const displayData = computed(() => {
+  if (status.value === 'pending') {
+    return skeletonData
+  }
+  return data.value || []
+})
+
+const isEmpty = computed(() => {
+  return status.value === 'success' && (!data.value || data.value.length === 0)
+})
 </script>
 
 <template>
@@ -174,12 +211,12 @@ const columns: TableColumn<any>[] = [
       <template #body>
         <div class="flex flex-wrap items-center justify-between gap-1.5">
           <UInput :model-value="(table?.tableApi?.getColumn('name')?.getFilterValue() as string)" class="max-w-sm"
-            icon="i-lucide-search" placeholder="Filter skills..."
+            icon="i-lucide-search" placeholder="Filter skills..." :disabled="status === 'pending'"
             @update:model-value="table?.tableApi?.getColumn('name')?.setFilterValue($event)" />
 
           <div class="flex flex-wrap items-center gap-1.5">
             <UButton v-if="selectedItems.length > 0" label="Delete" color="error" variant="subtle" icon="i-lucide-trash"
-              @click="isDeleteOpen = true">
+              :disabled="status === 'pending'" @click="isDeleteOpen = true">
               <template #trailing>
                 <UKbd>{{ selectedItems.length }}</UKbd>
               </template>
@@ -200,37 +237,82 @@ const columns: TableColumn<any>[] = [
                 }
               }))
               " :content="{ align: 'end' }">
-              <UButton label="Display" color="neutral" variant="outline" trailing-icon="i-lucide-settings-2" />
+              <UButton label="Display" color="neutral" variant="outline" trailing-icon="i-lucide-settings-2"
+                :disabled="status === 'pending'" />
             </UDropdownMenu>
           </div>
         </div>
 
-        <UTable ref="table" v-model:column-filters="columnFilters" v-model:column-visibility="columnVisibility"
+        <!-- Empty State -->
+        <div v-if="isEmpty" class="flex flex-col items-center justify-center py-12 text-center">
+          <UIcon name="i-lucide-code-2" class="size-16 text-zinc-700 mb-4" />
+          <h3 class="text-lg font-semibold text-white mb-2">No Skills Found</h3>
+          <p class="text-zinc-400 mb-6">Start building your skills portfolio by adding your first skill.</p>
+          <SkillsAddModal @success="refresh" />
+        </div>
+
+        <!-- Table with Skeleton -->
+        <UTable v-else ref="table" v-model:column-filters="columnFilters" v-model:column-visibility="columnVisibility"
           v-model:row-selection="rowSelection" v-model:pagination="pagination" :pagination-options="{
             getPaginationRowModel: getPaginationRowModel()
-          }" class="shrink-0" :data="data || []" :columns="columns" :loading="status === 'pending'" :ui="{
+          }" class="shrink-0" :data="displayData" :columns="columns" :loading="status === 'pending'" :ui="{
             base: 'table-fixed border-separate border-spacing-0',
             thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
             tbody: '[&>tr]:last:[&>td]:border-b-0',
             th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
             td: 'border-b border-default',
-            separator: 'h-0'
-          }" />
+            separator: 'h-0',
+            loading: 'animate-pulse'
+          }">
+          <!-- Skeleton cells -->
+          <template v-if="status === 'pending'" #[`cell-name`]>
+            <div class="h-4 bg-zinc-800 rounded w-32 animate-pulse" />
+          </template>
+          <template v-if="status === 'pending'" #[`cell-skill_categories`]>
+            <div class="h-4 bg-zinc-800 rounded w-24 animate-pulse" />
+          </template>
+          <template v-if="status === 'pending'" #[`cell-icon`]>
+            <div class="h-4 bg-zinc-800 rounded w-16 animate-pulse" />
+          </template>
+          <template v-if="status === 'pending'" #[`cell-display_order`]>
+            <div class="h-4 bg-zinc-800 rounded w-12 animate-pulse" />
+          </template>
+          <template v-if="status === 'pending'" #[`cell-proficiency_level`]>
+            <div class="h-4 bg-zinc-800 rounded w-16 animate-pulse" />
+          </template>
+          <template v-if="status === 'pending'" #[`cell-years_of_experience`]>
+            <div class="h-4 bg-zinc-800 rounded w-20 animate-pulse" />
+          </template>
+          <template v-if="status === 'pending'" #[`cell-is_active`]>
+            <div class="h-6 bg-zinc-800 rounded-full w-16 animate-pulse" />
+          </template>
+        </UTable>
 
-        <div class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">
+        <!-- Pagination -->
+        <div v-if="!isEmpty" class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">
           <div class="text-sm text-muted">
-            {{ Object.keys(rowSelection).length }} of
-            {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s) selected.
+            <template v-if="status === 'pending'">
+              <div class="h-4 bg-zinc-800 rounded w-32 animate-pulse" />
+            </template>
+            <template v-else>
+              {{ Object.keys(rowSelection).length }} of
+              {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s) selected.
+            </template>
           </div>
 
           <div class="flex items-center gap-1.5">
             <UPagination :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
               :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-              :total="table?.tableApi?.getFilteredRowModel().rows.length"
+              :total="table?.tableApi?.getFilteredRowModel().rows.length" :disabled="status === 'pending'"
               @update:page="(p: number) => table?.tableApi?.setPageIndex(p - 1)" />
           </div>
         </div>
       </template>
     </UDashboardPanel>
+
+    <!-- Modals -->
+    <SkillsEditModal v-model:open="isEditOpen" :item="selectedItem" @success="refresh" />
+
+    <SkillsDeleteModal v-model:open="isDeleteOpen" :items="selectedItems" @success="refresh" />
   </NuxtLayout>
 </template>

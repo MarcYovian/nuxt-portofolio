@@ -51,23 +51,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     loading.value = true
     try {
-        const { error } = await supabase.from('skill_categories')
-            .update({
+        await $fetch(`/api/skill-categories/${props.item.id}`, {
+            method: 'PUT',
+            body: {
                 name: event.data.name,
                 icon: event.data.icon,
                 display_order: event.data.display_order,
-                is_active: event.data.is_active,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', props.item.id)
-
-        if (error) throw error
+                is_active: event.data.is_active
+            }
+        })
 
         toast.add({ title: 'Success', description: 'Skill category updated successfully', color: 'success' })
         open.value = false
         emit('success')
     } catch (error: any) {
-        toast.add({ title: 'Error', description: error.message, color: 'error' })
+        toast.add({ title: 'Error', description: error.message || 'Failed to update category', color: 'error' })
     } finally {
         loading.value = false
     }

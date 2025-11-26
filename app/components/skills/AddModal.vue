@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { Database } from '~/types/database'
 
-const supabase = useSupabaseClient<Database>()
+
 const toast = useToast()
 const emit = defineEmits(['success'])
 
@@ -21,7 +20,11 @@ type Schema = z.output<typeof schema>
 
 const open = ref(false)
 const loading = ref(false)
-const categories = ref<{ id: number, name: string }[]>([])
+
+const { data: categories, refresh: refreshCategories } = await useFetch('/api/skill-categories', {
+    default: () => [],
+    lazy: true
+})
 
 const state = reactive<Partial<Schema>>({
     category_id: undefined,
@@ -33,29 +36,25 @@ const state = reactive<Partial<Schema>>({
     is_active: true
 })
 
-async function fetchCategories() {
-    const { data } = await supabase.from('skill_categories').select('id, name').order('name')
-    if (data) categories.value = data
-}
-
 watch(open, (isOpen) => {
-    if (isOpen) fetchCategories()
+    if (isOpen) refreshCategories()
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = true
     try {
-        const { error } = await supabase.from('skills').insert({
-            category_id: event.data.category_id,
-            name: event.data.name,
-            icon: event.data.icon,
-            proficiency_level: event.data.proficiency_level,
-            years_of_experience: event.data.years_of_experience,
-            display_order: event.data.display_order,
-            is_active: event.data.is_active
+        await $fetch('/api/skills', {
+            method: 'POST',
+            body: {
+                category_id: event.data.category_id,
+                name: event.data.name,
+                icon: event.data.icon,
+                proficiency_level: event.data.proficiency_level,
+                years_of_experience: event.data.years_of_experience,
+                display_order: event.data.display_order,
+                is_active: event.data.is_active
+            }
         })
-
-        if (error) throw error
 
         toast.add({ title: 'Success', description: 'Skill created successfully', color: 'success' })
         open.value = false
@@ -70,7 +69,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         state.display_order = 0
         state.is_active = true
     } catch (error: any) {
-        toast.add({ title: 'Error', description: error.message, color: 'error' })
+        toast.add({ title: 'Error', description: error.message || 'Failed to create skill', color: 'error' })
     } finally {
         loading.value = false
     }
