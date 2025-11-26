@@ -29,6 +29,20 @@ const links = [[{
     open.value = false
   }
 }, {
+  label: 'Skill Categories',
+  icon: 'i-lucide-list',
+  to: '/admin/skill-categories',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
+  label: 'Skills',
+  icon: 'i-lucide-code',
+  to: '/admin/skills',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Settings',
   to: '/admin/settings',
   icon: 'i-lucide-settings',
