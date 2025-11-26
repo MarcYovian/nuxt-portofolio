@@ -29,19 +29,37 @@ const links = [[{
     open.value = false
   }
 }, {
-  label: 'Skill Categories',
-  icon: 'i-lucide-list',
-  to: '/admin/skill-categories',
-  onSelect: () => {
-    open.value = false
-  }
+  label: 'Projects',
+  icon: 'i-lucide-folder-kanban',
+  children: [{
+    label: 'List',
+    to: '/admin/projects',
+    onSelect: () => {
+      open.value = false
+    }
+  }, {
+    label: 'Categories',
+    to: '/admin/project-categories',
+    onSelect: () => {
+      open.value = false
+    }
+  }]
 }, {
   label: 'Skills',
   icon: 'i-lucide-code',
-  to: '/admin/skills',
-  onSelect: () => {
-    open.value = false
-  }
+  children: [{
+    label: 'List',
+    to: '/admin/skills',
+    onSelect: () => {
+      open.value = false
+    }
+  }, {
+    label: 'Categories',
+    to: '/admin/skill-categories',
+    onSelect: () => {
+      open.value = false
+    }
+  }]
 }, {
   label: 'Settings',
   to: '/admin/settings',

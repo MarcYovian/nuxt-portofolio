@@ -87,6 +87,176 @@ export type Database = {
         }
         Relationships: []
       }
+      project_categories: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          display_order: number | null
+          id: number
+          is_active: boolean | null
+          name: string
+          slug: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: number
+          is_active?: boolean | null
+          name: string
+          slug: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: number
+          is_active?: boolean | null
+          name?: string
+          slug?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      project_skills: {
+        Row: {
+          created_at: string | null
+          project_id: number
+          skill_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          project_id: number
+          skill_id: number
+        }
+        Update: {
+          created_at?: string | null
+          project_id?: number
+          skill_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_skills_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          category_id: number
+          completed_at: string | null
+          content: string | null
+          created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
+          demo_url: string | null
+          description: string
+          github_url: string | null
+          id: number
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          like_count: number | null
+          meta_description: string | null
+          meta_keywords: string[] | null
+          meta_title: string | null
+          published_at: string | null
+          slug: string
+          started_at: string | null
+          status: string | null
+          storage_path: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+          updated_by: string | null
+          view_count: number | null
+        }
+        Insert: {
+          category_id: number
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          demo_url?: string | null
+          description: string
+          github_url?: string | null
+          id?: number
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          like_count?: number | null
+          meta_description?: string | null
+          meta_keywords?: string[] | null
+          meta_title?: string | null
+          published_at?: string | null
+          slug: string
+          started_at?: string | null
+          status?: string | null
+          storage_path?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+          updated_by?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          category_id?: number
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          demo_url?: string | null
+          description?: string
+          github_url?: string | null
+          id?: number
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          like_count?: number | null
+          meta_description?: string | null
+          meta_keywords?: string[] | null
+          meta_title?: string | null
+          published_at?: string | null
+          slug?: string
+          started_at?: string | null
+          status?: string | null
+          storage_path?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "project_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skill_categories: {
         Row: {
           created_at: string | null
