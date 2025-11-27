@@ -125,7 +125,7 @@ watch(selectedFilter, (newFilter) => {
 
           <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
             Featured
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-orange-300">
+            <span class="text-transparent bg-clip-text bg-linear-to-r from-primary-400 to-orange-300">
               Projects
             </span>
           </h1>
@@ -157,7 +157,7 @@ watch(selectedFilter, (newFilter) => {
             <div class="relative aspect-video overflow-hidden">
               <img :src="project.image" :alt="project.title"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-              <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/50 to-transparent opacity-60" />
+              <div class="absolute inset-0 bg-linear-to-t from-zinc-900 via-zinc-900/50 to-transparent opacity-60" />
 
               <!-- Featured Badge -->
               <div class="absolute top-4 right-4">
@@ -208,7 +208,7 @@ watch(selectedFilter, (newFilter) => {
             <div class="relative aspect-video overflow-hidden">
               <img :src="project.image" :alt="project.title"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-              <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/50 to-transparent opacity-60" />
+              <div class="absolute inset-0 bg-linear-to-t from-zinc-900 via-zinc-900/50 to-transparent opacity-60" />
             </div>
 
             <!-- Content -->
@@ -250,7 +250,7 @@ watch(selectedFilter, (newFilter) => {
 
       <!-- CTA -->
       <section v-motion-slide-visible-once-bottom
-        class="mt-20 relative overflow-hidden rounded-3xl border border-zinc-800 bg-gradient-to-br from-zinc-900/50 to-zinc-950/50">
+        class="mt-20 relative overflow-hidden rounded-3xl border border-zinc-800 bg-linear-to-br from-zinc-900/50 to-zinc-950/50">
         <div class="absolute inset-0 bg-grid-pattern opacity-20" />
         <div class="relative z-10 text-center py-16 px-8">
           <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
