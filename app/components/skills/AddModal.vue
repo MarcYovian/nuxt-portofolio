@@ -5,6 +5,15 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 const toast = useToast()
 const emit = defineEmits(['success'])
 
+const props = defineProps<{
+  hideTrigger?: boolean
+}>()
+
+const open = ref(false)
+
+defineExpose({
+  open
+})
 const schema = z.object({
   category_id: z.number({ message: 'Category is required' }),
   name: z.string().min(1, 'Name is required'),
@@ -17,7 +26,6 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-const open = ref(false)
 const loading = ref(false)
 const loadingCategories = ref(false)
 const categories = ref<Array<{ value: number; label: string, icon: string }>>([])
@@ -116,7 +124,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 <template>
   <UModal v-model:open="open" title="New skill" description="Add a new skill">
-    <UButton label="New skill" icon="i-lucide-plus" />
+    <UButton v-if="!hideTrigger" label="New skill" icon="i-lucide-plus" />
 
     <template #body>
       <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">

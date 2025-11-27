@@ -93,8 +93,8 @@ export default defineEventHandler(async (event) => {
   // Note: UFileUpload mengirim file dengan content-type
   if (filePart && filePart.filename) {
     const fileExt = filePart.filename.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    const filePath = `${user.id}/${fileName}`;
+    const fileName = `thumbnail-${Date.now()}.${fileExt}`;
+    const filePath = `${user.sub}/${fileName}`;
 
     const mimeMap: Record<string, string> = {
       png: "image/png",
@@ -143,13 +143,12 @@ export default defineEventHandler(async (event) => {
       image_url: imageUrl,
       thumbnail_url: thumbnailUrl,
       storage_path: storagePath,
-      created_by: user.id, // Trigger DB Anda mungkin sudah handle ini, tapi eksplisit lebih aman
+      created_by: user.id,
     })
     .select()
     .single();
 
   if (error) {
-    // Handle error constraint (misal slug duplikat)
     if (error.code === "23505") {
       throw createError({
         statusCode: 409,
@@ -157,6 +156,30 @@ export default defineEventHandler(async (event) => {
       });
     }
     throw createError({ statusCode: 500, message: error.message });
+  }
+
+  // 8. Insert Skills
+  if (fields.skills) {
+    try {
+      const skills = JSON.parse(fields.skills);
+      if (Array.isArray(skills) && skills.length > 0) {
+        const projectSkills = skills.map((skillId: number) => ({
+          project_id: data.id,
+          skill_id: skillId,
+        }));
+
+        const { error: skillsError } = await client
+          .from("project_skills")
+          .insert(projectSkills);
+
+        if (skillsError) {
+          console.error("Failed to insert skills:", skillsError);
+          // Optional: throw error or just log it
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse skills:", e);
+    }
   }
 
   return data;

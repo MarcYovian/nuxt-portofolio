@@ -6,7 +6,9 @@ export default eventHandler(async (event) => {
 
   const { data, error } = await client
     .from("projects")
-    .select("*, project_categories(name)")
+    .select(
+      "*, project_categories(name), project_skills(skill_id, skills(id, name, icon))",
+    )
     .order("created_at", { ascending: false });
 
   if (error) {

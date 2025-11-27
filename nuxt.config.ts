@@ -15,6 +15,10 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  build: {
+    transpile: ["@nuxtjs/supabase", "@supabase/supabase-js"],
+  },
+
   routeRules: {
     "/api/**": {
       cors: true,

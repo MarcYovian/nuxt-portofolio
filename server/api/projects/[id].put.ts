@@ -1,10 +1,19 @@
 import { z } from "zod";
-import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
+import {
+  serverSupabaseClient,
+  serverSupabaseUser,
+  serverSupabaseServiceRole,
+} from "#supabase/server";
 import type { Database } from "~/types/database";
 
 export default defineEventHandler(async (event) => {
   const idParam = getRouterParam(event, "id");
   const id = idParam ? parseInt(idParam) : 0;
+
+  const user = await serverSupabaseUser(event);
+  if (!user) {
+    throw createError({ statusCode: 401, message: "Unauthorized" });
+  }
 
   const formData = await readMultipartFormData(event);
   if (!formData) {
@@ -25,8 +34,26 @@ export default defineEventHandler(async (event) => {
 
   // Convert types
   if (fields.category_id) fields.category_id = parseInt(fields.category_id);
-  if (fields.is_active) fields.is_active = fields.is_active === "true";
-  if (fields.is_featured) fields.is_featured = fields.is_featured === "true";
+  fields.is_active = fields.is_active === "true";
+  fields.is_featured = fields.is_featured === "true";
+
+  // Handle Optional/Empty strings
+  [
+    "demo_url",
+    "github_url",
+    "started_at",
+    "completed_at",
+    "status",
+    "content",
+  ].forEach((key) => {
+    if (
+      fields[key] === "" ||
+      fields[key] === "undefined" ||
+      fields[key] === "null"
+    ) {
+      fields[key] = null;
+    }
+  });
 
   const schema = z.object({
     title: z.string().min(1).optional(),
@@ -54,18 +81,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const client = await serverSupabaseClient<Database>(event);
-  const user = await serverSupabaseUser(event);
-
-  if (!user) {
-    throw createError({ statusCode: 401, message: "Unauthorized" });
-  }
 
   const updateData: any = { ...validation.data };
   updateData.updated_by = user.id;
   updateData.updated_at = new Date().toISOString();
 
   // Handle File Upload
-  if (filePart) {
+  if (filePart && filePart.filename) {
     // 1. Get existing project to find old storage_path
     const { data: existingProject } = await client
       .from("projects")
@@ -81,14 +103,25 @@ export default defineEventHandler(async (event) => {
     }
 
     // 3. Upload new file
-    const fileExt = filePart.filename?.split(".").pop();
+    const fileExt = filePart.filename.split(".").pop();
     const fileName = `thumbnail-${Date.now()}.${fileExt}`;
-    const filePath = `${user.id}/${fileName}`;
+    const filePath = `${user.sub}/${fileName}`;
+
+    const mimeMap: Record<string, string> = {
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      gif: "image/gif",
+      webp: "image/webp",
+    };
+
+    const cleanContentType =
+      mimeMap[fileExt] || filePart.type || "application/octet-stream";
 
     const { error: uploadError } = await client.storage
       .from("projects")
       .upload(filePath, filePart.data, {
-        contentType: filePart.type,
+        contentType: cleanContentType,
         upsert: true,
       });
 
@@ -101,7 +134,7 @@ export default defineEventHandler(async (event) => {
       .getPublicUrl(filePath);
 
     updateData.image_url = publicUrlData.publicUrl;
-    updateData.thumbnail_url = publicUrlData.publicUrl;
+    updateData.thumbnail_url = `${publicUrlData.publicUrl}?width=500&resize=cover&quality=60`;
     updateData.storage_path = filePath;
   }
 
@@ -117,6 +150,35 @@ export default defineEventHandler(async (event) => {
       statusCode: 500,
       message: error.message,
     });
+  }
+
+  // Handle Skills Update
+  if (fields.skills) {
+    try {
+      const skills = JSON.parse(fields.skills);
+      if (Array.isArray(skills)) {
+        // 1. Delete existing skills
+        await client.from("project_skills").delete().eq("project_id", id);
+
+        // 2. Insert new skills
+        if (skills.length > 0) {
+          const projectSkills = skills.map((skillId: number) => ({
+            project_id: id,
+            skill_id: skillId,
+          }));
+
+          const { error: skillsError } = await client
+            .from("project_skills")
+            .insert(projectSkills);
+
+          if (skillsError) {
+            console.error("Failed to update skills:", skillsError);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse skills:", e);
+    }
   }
 
   return data;
