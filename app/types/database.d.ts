@@ -257,6 +257,57 @@ export type Database = {
           },
         ]
       }
+      services: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
+          description: string
+          display_order: number | null
+          features: Json | null
+          icon: string | null
+          id: number
+          is_active: boolean | null
+          price_range: string | null
+          slug: string
+          title: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          description: string
+          display_order?: number | null
+          features?: Json | null
+          icon?: string | null
+          id?: number
+          is_active?: boolean | null
+          price_range?: string | null
+          slug: string
+          title: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string
+          display_order?: number | null
+          features?: Json | null
+          icon?: string | null
+          id?: number
+          is_active?: boolean | null
+          price_range?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       skill_categories: {
         Row: {
           created_at: string | null
