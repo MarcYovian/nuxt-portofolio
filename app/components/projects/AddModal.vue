@@ -53,7 +53,7 @@ const previewUrl = ref<string | null>(null)
 const categories = ref<{ value: number; label: string }[]>([])
 const skills = ref<{ value: number; label: string; icon?: string }[]>([])
 const loadingSkills = ref(false)
-const skillModal = ref() // Template ref for SkillsAddModal
+const skillModal = ref<{ open: boolean } | null>(null) // Template ref for SkillsAddModal
 
 async function fetchCategories() {
     loadingCategories.value = true
@@ -85,18 +85,13 @@ async function fetchCategories() {
 async function fetchSkills() {
     loadingSkills.value = true
     try {
-        const { data: skillList } = await useFetch('/api/skills', {
-            key: 'skills-list',
-            transform: (data: { id: number; name: string; icon: string }[]) => {
-                return data?.map(skill => ({
-                    value: skill.id,
-                    label: skill.name,
-                    icon: skill.icon
-                }))
-            }
-        })
+        const data = await $fetch<{ id: number; name: string; icon: string }[]>('/api/skills')
 
-        skills.value = skillList.value || []
+        skills.value = data?.map(skill => ({
+            value: skill.id,
+            label: skill.name,
+            icon: skill.icon
+        })) || []
     } catch (error: any) {
         toast.add({
             title: 'Error',
@@ -116,6 +111,13 @@ watch(open, (isOpen) => {
         fetchSkills()
     }
 })
+
+async function onSkillCreated(newSkill: any) {
+    await fetchSkills()
+    if (newSkill && newSkill.id) {
+        state.skills = [...(state.skills || []), newSkill.id]
+    }
+}
 
 const state = reactive<Partial<Schema>>({
     title: undefined,
@@ -254,7 +256,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                                 <div class="text-center py-4 text-sm text-zinc-400 flex flex-col items-center gap-2">
                                     <span>No skills found</span>
                                     <UButton v-if="searchTerm" size="xs" color="primary" variant="soft"
-                                        label="Create skill" @click="skillModal.open = true" />
+                                        label="Create skill"
+                                        @click="() => { if (skillModal) skillModal.open = true }" />
                                 </div>
                             </template>
                         </USelectMenu>
@@ -316,6 +319,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </template>
 
         <!-- Skills Modal -->
-        <SkillsAddModal ref="skillModal" hide-trigger @success="fetchSkills" />
+        <SkillsAddModal ref="skillModal" hide-trigger @success="onSkillCreated" />
     </UModal>
 </template>

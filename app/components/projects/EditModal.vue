@@ -95,18 +95,13 @@ async function fetchCategories() {
 async function fetchSkills() {
   loadingSkills.value = true
   try {
-    const { data: skillList } = await useFetch('/api/skills', {
-      key: 'skills-list',
-      transform: (data: { id: number; name: string; icon: string }[]) => {
-        return data?.map(skill => ({
-          value: skill.id,
-          label: skill.name,
-          icon: skill.icon
-        }))
-      }
-    })
+    const data = await $fetch<{ id: number; name: string; icon: string }[]>(`/api/skills?t=${Date.now()}`)
 
-    skills.value = skillList.value || []
+    skills.value = data?.map(skill => ({
+      value: skill.id,
+      label: skill.name,
+      icon: skill.icon
+    })) || []
   } catch (error: any) {
     toast.add({
       title: 'Error',
@@ -160,6 +155,13 @@ watch(() => state.title, (newTitle) => {
     state.slug = undefined
   }
 })
+
+async function onSkillCreated(newSkill: any) {
+  await fetchSkills()
+  if (newSkill && newSkill.id) {
+    state.skills = [...(state.skills || []), newSkill.id]
+  }
+}
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   if (!props.item?.id) return
@@ -315,6 +317,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     </template>
 
     <!-- Skills Modal -->
-    <SkillsAddModal ref="skillModal" hide-trigger @success="fetchSkills" />
+    <SkillsAddModal ref="skillModal" hide-trigger @success="onSkillCreated" />
   </UModal>
 </template>

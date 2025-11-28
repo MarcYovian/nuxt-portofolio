@@ -6,7 +6,7 @@ const schema = z.object({
   category_id: z.number(),
   name: z.string().min(1),
   icon: z.string().optional(),
-  proficiency_level: z.number().min(0).max(100).optional(),
+  proficiency_level: z.number().min(1).max(5).optional(),
   years_of_experience: z.number().min(0).optional(),
   display_order: z.number().optional(),
   is_active: z.boolean().default(true),

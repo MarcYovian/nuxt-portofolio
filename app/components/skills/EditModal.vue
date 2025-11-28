@@ -27,7 +27,7 @@ const schema = z.object({
   category_id: z.number({ message: 'Category is required' }),
   name: z.string().min(1, 'Name is required'),
   icon: z.string().optional(),
-  proficiency_level: z.number().min(0).max(100).optional(),
+  proficiency_level: z.number().min(1).max(5).optional(),
   years_of_experience: z.number().min(0).optional(),
   display_order: z.number().optional(),
   is_active: z.boolean().default(true)
@@ -39,7 +39,7 @@ const state = reactive<Partial<Schema>>({
   category_id: undefined,
   name: undefined,
   icon: undefined,
-  proficiency_level: 0,
+  proficiency_level: 1,
   years_of_experience: 0,
   display_order: 0,
   is_active: true
@@ -80,7 +80,7 @@ watch(() => props.item, (newItem) => {
     state.category_id = newItem.category_id
     state.name = newItem.name
     state.icon = newItem.icon || undefined
-    state.proficiency_level = newItem.proficiency_level || 0
+    state.proficiency_level = newItem.proficiency_level || 1
     state.years_of_experience = newItem.years_of_experience || 0
     state.display_order = newItem.display_order || 0
     state.is_active = newItem.is_active ?? true
@@ -159,8 +159,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
 
         <div class="grid grid-cols-2 gap-4">
-          <UFormField label="Proficiency (%)" name="proficiency_level">
-            <UInput v-model.number="state.proficiency_level" type="number" min="0" max="100" class="w-full" />
+          <UFormField label="Proficiency (1-5)" name="proficiency_level">
+            <UInput v-model.number="state.proficiency_level" type="number" min="1" max="5" class="w-full" />
           </UFormField>
 
           <UFormField label="Years of Experience" name="years_of_experience">

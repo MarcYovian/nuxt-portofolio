@@ -126,7 +126,7 @@ const columns: TableColumn<any>[] = [
   {
     accessorKey: 'proficiency_level',
     header: 'Proficiency',
-    cell: ({ row }) => row.original.proficiency_level ? `${row.original.proficiency_level}%` : '-'
+    cell: ({ row }) => row.original.proficiency_level ? `${row.original.proficiency_level}/5` : '-'
   },
   {
     accessorKey: 'years_of_experience',
