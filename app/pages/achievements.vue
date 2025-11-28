@@ -1,57 +1,17 @@
 <script setup lang="ts">
 // Data Achievements
-// Gunakan URL gambar sertifikat asli Anda di sini.
-// Untuk saat ini saya menggunakan placeholder dari Unsplash yang relevan dengan teknologi/sertifikat.
-const achievements = [
-  {
-    id: 1,
-    title: 'Winner of National Hackathon 2023',
-    organization: 'Tech Ministry Indonesia',
-    date: 'November 2023',
-    description: 'Secured 1st place out of 500+ teams by building an AI-powered disaster response application using Nuxt and Python.',
-    image: 'https://images.unsplash.com/photo-1561489413-985b06da5bee?w=800&q=80' // Placeholder: Trophy/Certificate vibe
-  },
-  {
-    id: 2,
-    title: 'Best UI/UX Design Award',
-    organization: 'Dribbble Meetup Jakarta',
-    date: 'August 2023',
-    description: 'Awarded for the most innovative and accessible mobile app interface design for a fintech startup case study.',
-    image: 'https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?w=800&q=80' // Placeholder: Design award vibe
-  },
-  {
-    id: 3,
-    title: 'Open Source Contributor',
-    organization: 'Nuxt Framework',
-    date: '2022 - Present',
-    description: 'Active contributor to the Nuxt ecosystem, creating modules and fixing bugs to help the community grow.',
-    image: 'https://images.unsplash.com/photo-1607799275518-d58665d099db?w=800&q=80' // Placeholder: Coding/GitHub vibe
-  },
-  {
-    id: 4,
-    title: 'Top Rated Freelancer',
-    organization: 'Upwork',
-    date: '2022',
-    description: 'Achieved Top Rated status with 100% Job Success Score, delivering high-quality full-stack solutions to global clients.',
-    image: 'https://images.unsplash.com/photo-1553877602-b9c10e66862d?w=800&q=80' // Placeholder: Professional success
-  },
-  {
-    id: 5,
-    title: 'Speaker at VueConf ID',
-    organization: 'Vue.js Indonesia',
-    date: 'June 2022',
-    description: 'Delivered a talk on "Optimizing Performance in Large Scale Vue Applications" to an audience of 300+ developers.',
-    image: 'https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=800&q=80' // Placeholder: Speaker/Conference
-  },
-  {
-    id: 6,
-    title: 'Google Cloud Certified',
-    organization: 'Google',
-    date: 'January 2022',
-    description: 'Earned the Professional Cloud Architect certification, demonstrating expertise in designing and managing robust cloud solutions.',
-    image: 'https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?w=800&q=80' // Placeholder: Tech/Cloud
-  }
-]
+const { data: achievements } = await useAsyncData('public-achievements', async () => {
+  const data = await $fetch<any[]>('/api/achievements')
+  return data.map(item => ({
+    id: item.id,
+    title: item.title,
+    organization: item.issuer,
+    date: new Date(item.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    description: item.description,
+    image: item.image_url,
+    type: item.type
+  }))
+})
 
 useSeoMeta({
   title: 'Achievements - Marcellinus Yovian',
@@ -74,7 +34,7 @@ useSeoMeta({
 
           <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
             Celebrating
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-orange-300">
+            <span class="text-transparent bg-clip-text bg-linear-to-r from-primary-400 to-orange-300">
               Success
             </span>
           </h1>
@@ -99,7 +59,7 @@ useSeoMeta({
 
               <!-- Overlay Gradient -->
               <div
-                class="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent pointer-events-none" />
+                class="absolute inset-0 bg-linear-to-t from-zinc-900/80 via-transparent to-transparent pointer-events-none" />
 
               <!-- Date Badge on Image -->
               <div class="absolute top-4 right-4">

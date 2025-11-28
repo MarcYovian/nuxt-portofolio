@@ -22,13 +22,6 @@ const links = [[{
     open.value = false
   }
 }, {
-  label: 'Customers',
-  icon: 'i-lucide-users',
-  to: '/admin/customers',
-  onSelect: () => {
-    open.value = false
-  }
-}, {
   label: 'Projects',
   icon: 'i-lucide-folder-kanban',
   children: [{
@@ -64,6 +57,20 @@ const links = [[{
   label: 'Services',
   icon: 'i-lucide-briefcase',
   to: '/admin/services',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
+  label: 'Tags',
+  icon: 'i-lucide-tag',
+  to: '/admin/tags',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
+  label: 'Achievements',
+  icon: 'i-lucide-award',
+  to: '/admin/achievements',
   onSelect: () => {
     open.value = false
   }

@@ -39,6 +39,102 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievement_tags: {
+        Row: {
+          achievement_id: number
+          created_at: string | null
+          tag_id: number
+        }
+        Insert: {
+          achievement_id: number
+          created_at?: string | null
+          tag_id: number
+        }
+        Update: {
+          achievement_id?: number
+          created_at?: string | null
+          tag_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "achievement_tags_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "achievement_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      achievements: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          credential_id: string | null
+          credential_url: string | null
+          date: string
+          deleted_at: string | null
+          description: string | null
+          display_order: number | null
+          id: number
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          issuer: string
+          storage_path: string | null
+          title: string
+          type: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          credential_id?: string | null
+          credential_url?: string | null
+          date: string
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: number
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          issuer: string
+          storage_path?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          credential_id?: string | null
+          credential_url?: string | null
+          date?: string
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: number
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          issuer?: string
+          storage_path?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -396,6 +492,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tags: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          created_by: string | null
+          id: number
+          name: string
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: number
+          name: string
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: number
+          name?: string
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
