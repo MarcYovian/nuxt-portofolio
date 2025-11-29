@@ -54,6 +54,13 @@ const links = [[{
     }
   }]
 }, {
+  label: 'Experiences',
+  icon: 'i-lucide-building-2',
+  to: '/admin/experiences',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Services',
   icon: 'i-lucide-briefcase',
   to: '/admin/services',

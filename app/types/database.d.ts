@@ -135,6 +135,108 @@ export type Database = {
         }
         Relationships: []
       }
+      experience_skills: {
+        Row: {
+          created_at: string | null
+          experience_id: number
+          skill_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          experience_id: number
+          skill_id: number
+        }
+        Update: {
+          created_at?: string | null
+          experience_id?: number
+          skill_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_skills_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "experiences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experiences: {
+        Row: {
+          achievements: Json | null
+          company: string
+          company_logo: string | null
+          company_website: string | null
+          created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
+          description: string | null
+          display_order: number | null
+          employment_type: string | null
+          end_date: string | null
+          id: number
+          is_active: boolean | null
+          is_current: boolean | null
+          location: string | null
+          role: string
+          start_date: string
+          storage_path: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          achievements?: Json | null
+          company: string
+          company_logo?: string | null
+          company_website?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          employment_type?: string | null
+          end_date?: string | null
+          id?: number
+          is_active?: boolean | null
+          is_current?: boolean | null
+          location?: string | null
+          role: string
+          start_date: string
+          storage_path?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          achievements?: Json | null
+          company?: string
+          company_logo?: string | null
+          company_website?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          employment_type?: string | null
+          end_date?: string | null
+          id?: number
+          is_active?: boolean | null
+          is_current?: boolean | null
+          location?: string | null
+          role?: string
+          start_date?: string
+          storage_path?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -502,6 +604,7 @@ export type Database = {
           name: string
           slug: string
           updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           color?: string | null
@@ -511,6 +614,7 @@ export type Database = {
           name: string
           slug: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           color?: string | null
@@ -520,6 +624,7 @@ export type Database = {
           name?: string
           slug?: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
