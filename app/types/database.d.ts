@@ -135,6 +135,84 @@ export type Database = {
         }
         Relationships: []
       }
+      education: {
+        Row: {
+          activities: Json | null
+          created_at: string | null
+          created_by: string | null
+          degree: string
+          deleted_at: string | null
+          description: string | null
+          display_order: number | null
+          end_date: string | null
+          field_of_study: string | null
+          gpa: number | null
+          honors: string[] | null
+          id: number
+          institution: string
+          institution_logo: string | null
+          institution_website: string | null
+          is_active: boolean | null
+          is_current: boolean | null
+          location: string | null
+          max_gpa: number | null
+          start_date: string
+          storage_path: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          activities?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          degree: string
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          end_date?: string | null
+          field_of_study?: string | null
+          gpa?: number | null
+          honors?: string[] | null
+          id?: number
+          institution: string
+          institution_logo?: string | null
+          institution_website?: string | null
+          is_active?: boolean | null
+          is_current?: boolean | null
+          location?: string | null
+          max_gpa?: number | null
+          start_date: string
+          storage_path?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          activities?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          degree?: string
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          end_date?: string | null
+          field_of_study?: string | null
+          gpa?: number | null
+          honors?: string[] | null
+          id?: number
+          institution?: string
+          institution_logo?: string | null
+          institution_website?: string | null
+          is_active?: boolean | null
+          is_current?: boolean | null
+          location?: string | null
+          max_gpa?: number | null
+          start_date?: string
+          storage_path?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       experience_skills: {
         Row: {
           created_at: string | null

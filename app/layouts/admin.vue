@@ -61,6 +61,13 @@ const links = [[{
     open.value = false
   }
 }, {
+  label: 'Education',
+  icon: 'i-lucide-graduation-cap',
+  to: '/admin/educations',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Services',
   icon: 'i-lucide-briefcase',
   to: '/admin/services',
