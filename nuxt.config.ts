@@ -7,6 +7,8 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "@vueuse/motion/nuxt",
     "@nuxtjs/supabase",
+    "nuxt-nodemailer",
+    "nuxt-email-renderer",
   ],
 
   devtools: {
@@ -40,5 +42,15 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
     redirect: false,
+  },
+  nodemailer: {
+    from: process.env.NUXT_NODEMAILER_FROM,
+    host: process.env.NUXT_NODEMAILER_HOST,
+    port: Number(process.env.NUXT_NODEMAILER_PORT),
+    secure: true,
+    auth: {
+      user: process.env.NUXT_NODEMAILER_AUTH_USER,
+      pass: process.env.NUXT_NODEMAILER_AUTH_PASS,
+    },
   },
 });

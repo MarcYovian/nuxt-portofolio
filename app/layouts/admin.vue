@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
+import { MessageStatus } from '../types/messages'
+
 const route = useRoute()
 const toast = useToast()
 
 const open = ref(false)
 
-const links = [[{
+const { data: unreadMessages } = await useFetch('/api/messages', {
+  query: {
+    status: MessageStatus.UNREAD,
+    limit: 1
+  },
+  watch: [route] // Refresh count on route change
+})
+
+const unreadCount = computed(() => unreadMessages.value?.total || 0)
+
+const links = computed<NavigationMenuItem[][]>(() => [[{
   label: 'Home',
   icon: 'i-lucide-house',
   to: '/admin',
@@ -17,7 +29,7 @@ const links = [[{
   label: 'Inbox',
   icon: 'i-lucide-inbox',
   to: '/admin/inbox',
-  badge: '4',
+  badge: unreadCount.value > 0 ? String(unreadCount.value) : undefined,
   onSelect: () => {
     open.value = false
   }
@@ -124,12 +136,12 @@ const links = [[{
   icon: 'i-lucide-info',
   to: 'https://github.com/nuxt-ui-templates/dashboard',
   target: '_blank'
-}]] satisfies NavigationMenuItem[][]
+}]])
 
 const groups = computed(() => [{
   id: 'links',
   label: 'Go to',
-  items: links.flat()
+  items: links.value.flat()
 }, {
   id: 'code',
   label: 'Code',

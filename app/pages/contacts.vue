@@ -24,24 +24,34 @@ const toast = useToast()
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isLoading.value = true
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1500))
+  try {
+    await $fetch('/api/messages', {
+      method: 'POST',
+      body: event.data
+    })
 
-  console.log(event.data)
-  isLoading.value = false
+    toast.add({
+      title: 'Message Sent!',
+      description: 'Thanks for reaching out. I will get back to you soon.',
+      icon: 'i-lucide-check-circle',
+      color: 'success'
+    })
 
-  toast.add({
-    title: 'Message Sent!',
-    description: 'Thanks for reaching out. I will get back to you soon.',
-    icon: 'i-lucide-check-circle',
-    color: 'success'
-  })
-
-  // Reset form
-  state.name = undefined
-  state.email = undefined
-  state.subject = undefined
-  state.message = undefined
+    // Reset form
+    state.name = undefined
+    state.email = undefined
+    state.subject = undefined
+    state.message = undefined
+  } catch (error: any) {
+    toast.add({
+      title: 'Error',
+      description: error.statusMessage || 'Failed to send message. Please try again.',
+      icon: 'i-lucide-alert-circle',
+      color: 'error'
+    })
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const contactInfo = [
@@ -98,7 +108,7 @@ useSeoMeta({
 
           <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
             Let's work
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-orange-300">
+            <span class="text-transparent bg-clip-text bg-linear-to-r from-primary-400 to-orange-300">
               Together
             </span>
           </h1>
