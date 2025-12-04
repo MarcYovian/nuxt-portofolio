@@ -101,6 +101,13 @@ const links = computed<NavigationMenuItem[][]>(() => [[{
     open.value = false
   }
 }, {
+  label: 'Site Settings',
+  icon: 'i-lucide-globe',
+  to: '/admin/site-settings',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Settings',
   to: '/admin/settings',
   icon: 'i-lucide-settings',
